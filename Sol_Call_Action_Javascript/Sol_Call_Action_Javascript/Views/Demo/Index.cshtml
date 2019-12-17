@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<form>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <button id="btnGetJson" class="btn btn-primary" onclick="onGetJsonSubmit(); return false;">Get Json</button>
+
+                <div>
+                    <h2 id="lblFirstName"></h2>
+                    <h2 id="lblLastName"></h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button id="btnPostGetJson" class="btn btn-primary" onclick="onPostGetJsonSubmit(); return false;">Get Post Json</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+
+<script type="text/javascript">
+
+    function userModel() {
+        this.firstName = undefined;
+        this.lastName = undefined;
+    }
+
+    function onGetJsonSubmit() {
+
+       $.ajax({
+                type: "POST",
+                url: '@Url.Action("OnGetJson","Demo")',
+                contentType: "application/json",
+                dataType: "json",
+                success: function (response) {
+
+                    console.log(response); // Response As Object
+
+                    var userModelJson = JSON.stringify(response); // Convert Object to Json
+                    console.log(userModelJson);
+
+                    var userModelData = JSON.parse(userModelJson); // Convert Json into Object
+                    console.log(userModelData);
+
+                    // Map User Model Object
+                    var userModelObj = new userModel();
+                    userModelObj.firstName = userModelData.firstName;
+                    userModelObj.lastName = userModelData.lastName;
+
+                    // Print
+                    $("div #lblFirstName").html(userModelObj.firstName);
+                    $("div #lblLastName").html(userModelObj.lastName);
+                    
+
+                },
+                failure: function (response) {
+                    alert(response);
+                }
+            });
+    }
+
+    function onPostGetJsonSubmit() {
+
+        var userModelObj = new userModel();
+        userModelObj.firstName = "Yogesh";
+        userModelObj.lastName = "Naik";
+
+       
+
+        $.ajax(
+            {
+                type: "POST",
+                url: '@Url.Action("OnPostJson","Demo")',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(userModelObj),
+                success: function (response) {
+
+                     console.log(response); // Response As Object
+
+                    var userModelJson = JSON.stringify(response); // Convert Object to Json
+                    console.log(userModelJson);
+
+                    var userModelData = JSON.parse(userModelJson); // Convert Json into Object
+                    console.log(userModelData);
+
+                    // Map User Model Object
+                    var userModelObj = new userModel();
+                    userModelObj.firstName = userModelData.firstName;
+                    userModelObj.lastName = userModelData.lastName;
+
+                    // Print
+                    $("div #lblFirstName").html(userModelObj.firstName);
+                    $("div #lblLastName").html(userModelObj.lastName);
+
+                },
+                failure: function (response) {
+                    console.log(response);
+                }
+                
+            });
+
+    }
+
+</script>
+
+}
+
